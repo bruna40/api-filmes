@@ -22,6 +22,10 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests( auth ->{
                     auth.requestMatchers(HttpMethod.POST, "/user/create").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/auth").permitAll()
+                    .requestMatchers(HttpMethod.PUT, "/user/update").authenticated()
+                    .requestMatchers(HttpMethod.GET, "/user/profile").authenticated()
+                    .requestMatchers(HttpMethod.DELETE, "/user/delete").authenticated()
                     .anyRequest().authenticated();
 
             })

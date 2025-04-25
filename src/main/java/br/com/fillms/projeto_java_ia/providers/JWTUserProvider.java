@@ -11,6 +11,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,7 +43,7 @@ public class JWTUserProvider {
       }
   }
 
-  public String generateToken(String id, String email, String name) {
+  public String generateToken(UUID id, String email, String name) {
     Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
     Instant expiresIn = Instant.now().plus(Duration.ofDays(1));
@@ -50,10 +51,10 @@ public class JWTUserProvider {
     Date expirationDate = Date.from(expiresIn);
 
     return JWT.create()
-        .withIssuer("develfood")
+        .withIssuer("java-ia")
         .withClaim("email", email)
         .withClaim("name", name)
-        .withClaim("id", id)
+        .withClaim("id", id.toString())
         .withExpiresAt(expirationDate)
         .sign(algorithm);
   }
@@ -68,7 +69,7 @@ public class JWTUserProvider {
           DecodedJWT decodedToken = JWT.require(algorithm)
               .build()
               .verify(token);
-          String id = decodedToken.getClaim("name").asString();
+          String id = decodedToken.getClaim("id").asString();
           
           if (id != null) {
               
