@@ -43,7 +43,7 @@ public class JWTUserProvider {
       }
   }
 
-  public String generateToken(UUID id, String email, String name) {
+  public String generateToken(UUID id, String email, String name, String role) {
     Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
     Instant expiresIn = Instant.now().plus(Duration.ofDays(1));
@@ -55,9 +55,11 @@ public class JWTUserProvider {
         .withClaim("email", email)
         .withClaim("name", name)
         .withClaim("id", id.toString())
+        .withClaim("role", role) // << ADICIONADO AQUI
         .withExpiresAt(expirationDate)
         .sign(algorithm);
-  }
+}
+
 
   public String extractId(String token) {
       token = token.replace("Bearer ", "");

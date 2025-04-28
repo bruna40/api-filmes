@@ -1,8 +1,13 @@
 package br.com.fillms.projeto_java_ia.security;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -35,24 +40,29 @@ public class SecurityUserFilter extends OncePerRequestFilter{
             String token = header.replace("Bearer ", "");
             var decodeToken = jwtUserProvider.validateToken(token);
 
-            if(decodeToken != null) {
+            if (decodeToken != null) {
                 var emailUser = decodeToken.getClaim("email").asString();
-
-                 UserDetails userDetails = User.withUsername(emailUser)
-                        .password("")
-                        .build();
-
-                var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-
-                request.setAttribute("email", emailUser);
+                var idUser = UUID.fromString(decodeToken.getClaim("id").asString());
+                var roleUser = decodeToken.getClaim("role").asString();
                 
+                if (roleUser == null) {
+                    roleUser = "USER"; // Default role if not present in token
+                }
+               
+                List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + roleUser.toUpperCase()));
+            
+                CustomUserDetails userDetails = new CustomUserDetails(idUser, emailUser, authorities);
+            
+                var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            
+                request.setAttribute("email", emailUser);
             } else {
-
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
+            
             
         }
         filterChain.doFilter(request, response);

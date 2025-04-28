@@ -31,7 +31,7 @@ public class AuthService {
         if (!passwordEncoder.matches(loginRequestDTO.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("Invalid credentials");
         }
-        String token = jwtService.generateToken(user.getId(), user.getEmail(),  user.getUsername());
+        String token = jwtService.generateToken(user.getId(), user.getEmail(),  user.getUsername(), user.getRole().name());
         return LoginResponseDTO.builder()
                 .token(token)
                 .id(user.getId().toString())

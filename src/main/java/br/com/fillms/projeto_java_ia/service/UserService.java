@@ -83,13 +83,14 @@ public class UserService {
         );
     }
 
-    public UserEntity getUserById(UUID id) {
-        return usersRepository.findById(id)
+    public UserEntity getUserById(String id) {
+        
+        return usersRepository.findByIdAndActiveTrue(UUID.fromString(id))
             .orElseThrow(UserNotFound::new);
     }
 
     public ResponseUser editUser(UpdateUserDTO userDTO, String userId) {
-        UserEntity user = usersRepository.findById(UUID.fromString(userId))
+        UserEntity user = usersRepository.findByIdAndActiveTrue(UUID.fromString(userId))
             .orElseThrow(UserNotFound::new);
         
       
@@ -128,7 +129,7 @@ public class UserService {
     }
 
     public ResponseUser profileUser(String userId) {
-        UserEntity user = usersRepository.findById(UUID.fromString(userId))
+        UserEntity user = usersRepository.findByIdAndActiveTrue(UUID.fromString(userId))
             .orElseThrow(UserNotFound::new);
         
         return new ResponseUser(
@@ -144,7 +145,7 @@ public class UserService {
     }
 
     public void deleteUser(String userId) {
-        UserEntity user = usersRepository.findById(UUID.fromString(userId))
+        UserEntity user = usersRepository.findByIdAndActiveTrue(UUID.fromString(userId))
             .orElseThrow(UserNotFound::new);
         
         user.setName(null);
@@ -156,5 +157,7 @@ public class UserService {
 
         usersRepository.save(user);
     }
+
+
 
 }
