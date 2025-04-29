@@ -27,6 +27,9 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/user/profile").authenticated()
                     .requestMatchers(HttpMethod.DELETE, "/user/delete").authenticated()
                     .requestMatchers(HttpMethod.POST, "/film/create").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PUT, "/film/edit/{filmId}").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/film/all").authenticated()
+                    .requestMatchers(HttpMethod.DELETE, "/film/delete/{filmId}").hasRole("ADMIN")
                     .anyRequest().authenticated();
 
             })

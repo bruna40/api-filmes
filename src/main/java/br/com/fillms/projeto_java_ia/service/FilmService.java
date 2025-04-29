@@ -41,4 +41,46 @@ public class FilmService {
     return filmRepository.findAll();
    }
 
+   public FilmEntity editFilm(String userId, String filmId, FilmEntity film) {
+        UserEntity user = userService.getUserById(userId);
+
+        FilmEntity filmToEdit = filmRepository.findByFilmId(UUID.fromString(filmId))
+            .orElseThrow(() -> new RuntimeException("Film not found"));
+
+        if (user.getRole() != RoleEnum.ADMIN && !user.getId().equals(filmToEdit.getUserId())) {
+            throw new RuntimeException("User is not an admin or is not the owner of the film");
+        }
+
+        if (film.getTitle() != null) {
+            filmToEdit.setTitle(film.getTitle());
+        }
+        if (film.getDescription() != null) {
+            filmToEdit.setDescription(film.getDescription());
+        }
+        if (film.getReleaseYear() != null) {
+            filmToEdit.setReleaseYear(film.getReleaseYear());
+        }
+        if (film.getLanguage() != null) {
+            filmToEdit.setLanguage(film.getLanguage());
+        }
+
+        return filmRepository.save(filmToEdit);
+    }
+
+
+    public void deleteFilm(String userId, String filmId) {
+        UserEntity user = userService.getUserById(userId);
+        FilmEntity filmToDelete = filmRepository.findByFilmId(UUID.fromString(filmId))
+        .orElseThrow(() -> new RuntimeException("Film not found"));
+        if( user.getRole() != RoleEnum.ADMIN && !user.getId().equals(filmToDelete.getUserId())) {
+            throw new RuntimeException("User is not an admin");
+        }
+        filmRepository.delete(filmToDelete);
+    }
+
+
+
+
+
+
 }

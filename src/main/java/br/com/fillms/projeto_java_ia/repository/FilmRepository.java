@@ -1,5 +1,8 @@
 package br.com.fillms.projeto_java_ia.repository;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,5 +15,6 @@ public interface FilmRepository extends JpaRepository<FilmEntity, Long> {
     // // For example, find by title or release year
     // List<FilmEntity> findByTitle(String title);
     // List<FilmEntity> findByReleaseYear(Integer releaseYear);
-    
+    Optional<FilmEntity> findByFilmId(UUID id);
+    void deleteByFilmId(UUID id);
 }

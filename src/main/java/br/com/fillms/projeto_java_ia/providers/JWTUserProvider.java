@@ -55,7 +55,7 @@ public class JWTUserProvider {
         .withClaim("email", email)
         .withClaim("name", name)
         .withClaim("id", id.toString())
-        .withClaim("role", role) // << ADICIONADO AQUI
+        .withClaim("role", role) 
         .withExpiresAt(expirationDate)
         .sign(algorithm);
 }
